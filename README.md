@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Skin Lab Rx 🔬
+
+**AI-Powered Skin Analysis & Product Recommender with Virtual Try-On**
+
+Built for the [Perfect Corp × Startup World Cup Hackathon](https://perfectcorphackathon.devpost.com/)
+
+---
+
+## What It Does
+
+Skin Lab Rx is a mobile-first web app that uses Perfect Corp's AI APIs to:
+
+1. **Analyze Your Skin** — Upload a selfie and get AI-scored diagnostics across 14 skin metrics (acne, wrinkles, pores, texture, hydration, oiliness, redness, dark circles, age spots, radiance, firmness, eye bags)
+2. **Recommend Products** — Get personalized skincare product matches ranked by your worst-performing concerns
+3. **Virtual Try-On** — Upload any reference makeup look and see it transferred onto your face using AI Makeup Transfer
+
+## Perfect Corp APIs Used
+
+- **AI Skin Analysis** (`/s2s/v2.0/task/skin-analysis`) — SD skin concern detection with 14 metrics
+- **AI Makeup Transfer** (`/s2s/v2.0/task/mu-transfer`) — Transfers makeup from a reference image to a target selfie
+
+## Tech Stack
+
+- **Next.js 16** (App Router, TypeScript)
+- **Perfect Corp YouCam API** (Skin Analysis + Makeup Transfer)
+- Vanilla CSS (glassmorphism dark theme, mobile-first)
+- No external UI framework dependencies
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your Perfect Corp API key
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) on your phone or in a mobile-sized browser window.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Description |
+|---|---|
+| `PERFECT_CORP_API_KEY` | Your YouCam API key from [yce.perfectcorp.com](https://yce.perfectcorp.com) |
 
-## Learn More
+## Architecture
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/
+│   ├── api/
+│   │   ├── skin-analysis/route.ts   # Proxies to Perfect Corp Skin Analysis API
+│   │   └── makeup-transfer/route.ts # Proxies to Perfect Corp Makeup Transfer API
+│   ├── layout.tsx
+│   ├── page.tsx                     # Main SPA with tab navigation
+│   └── globals.css                  # Design system
+├── components/
+│   ├── BottomNav.tsx
+│   ├── ImageUpload.tsx
+│   ├── ProductCard.tsx
+│   └── ScoreRing.tsx
+├── views/
+│   ├── HomeView.tsx
+│   ├── AnalyzeView.tsx
+│   ├── ProductsView.tsx
+│   └── TryOnView.tsx
+└── lib/
+    ├── types.ts                     # Shared types and helpers
+    └── products.ts                  # Product database and matching algorithm
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Rate Limiting
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The app implements conservative rate limiting to preserve API units:
+- Skin Analysis: 3 requests per minute per IP
+- Makeup Transfer: 2 requests per minute per IP
+- Polling uses exponential backoff (2s → 5s intervals)
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

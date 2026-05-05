@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# hackathon reference docs
+AI_Makeup_Virtual_Try-on.md
+Ai_Skin_Analysis.md
+Challenge_Requirements.md
+YouCam_API_Info.md
