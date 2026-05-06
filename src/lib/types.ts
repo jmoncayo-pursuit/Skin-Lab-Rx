@@ -58,22 +58,25 @@ export const SKIN_CONCERNS: SkinConcern[] = [
 ];
 
 export function getScoreColor(score: number): string {
-  if (score >= 80) return '#8BAFA0';
-  if (score >= 60) return '#C4B87B';
-  if (score >= 40) return '#C4997B';
-  return '#C48B8B';
+  if (score >= 85) return '#8BAFA0'; // Green
+  if (score >= 70) return '#C4B87B'; // Yellowish green
+  if (score >= 50) return '#C4997B'; // Orange
+  if (score >= 30) return '#C48B8B'; // Red
+  return '#A86E6E'; // Dark Red (Extreme)
 }
 
 export function getScoreLabel(score: number): string {
-  if (score >= 80) return 'Excellent';
-  if (score >= 60) return 'Good';
-  if (score >= 40) return 'Fair';
-  return 'Needs Care';
+  if (score >= 85) return 'Excellent';
+  if (score >= 70) return 'Good';
+  if (score >= 50) return 'Fair';
+  if (score >= 30) return 'Needs Work';
+  return 'Extreme';
 }
 
-export function getConcernSeverity(score: number): 'low' | 'moderate' | 'high' {
+export function getConcernSeverity(score: number): 'low' | 'moderate' | 'high' | 'extreme' {
   // Lower score = more severe concern
   if (score >= 75) return 'low';
   if (score >= 50) return 'moderate';
-  return 'high';
+  if (score >= 30) return 'high';
+  return 'extreme';
 }
