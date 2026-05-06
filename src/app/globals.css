@@ -1,8 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 :root {
+  /* Core Palette - Soft Pastels */
+  --bg-radiant: #fff3e0; /* Peach/Cream */
+  --bg-clear: #e0f2f1;   /* Mint */
+  --bg-youthful: #fce4ec; /* Soft Rose */
+  --bg-bright-eyes: #e3f2fd; /* Ice Blue */
+  --bg-spot-free: #fff9c4; /* Pale Yellow */
+  
+  --stroke-color: #2d2d2d; /* Bold Charcoal Outline */
+  --accent-glow: #ffd54f;  /* Sunshine Yellow */
+  
   /* Core palette — Light spa aesthetic */
-  --bg-primary: #F4F7FA; /* Very soft pastel blue/grey tint */
+  --bg-primary: var(--bg-bright-eyes); /* Using Ice Blue for global bg */
   --bg-secondary: #FFFFFF;
   --bg-card: rgba(255, 255, 255, 0.8);
   --bg-card-hover: rgba(255, 255, 255, 1);
@@ -754,6 +764,34 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   color: transparent;
+}
+
+/* ========== High-Gloss Glassmorphism Elements ========== */
+/* Glassmorphism Effect for the "Clear" Look */
+.clear-element {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 3px solid var(--stroke-color);
+  border-radius: 50%; /* For the bubble shape */
+  
+  /* High-Gloss Highlight */
+  box-shadow: inset 10px 10px 20px rgba(255, 255, 255, 0.6), 
+              inset -5px -5px 15px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glossy Shine Overlay */
+.clear-element::after {
+  content: "";
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  width: 20%;
+  height: 20%;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
 }
 
 
