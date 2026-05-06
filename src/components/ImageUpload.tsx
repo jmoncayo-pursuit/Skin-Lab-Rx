@@ -14,6 +14,7 @@ export default function ImageUpload({ onImageSelected, label, hint, accept = 'im
   const [dragOver, setDragOver] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
+  const [alignmentState, setAlignmentState] = useState<'scanning' | 'aligned'>('scanning');
 
   const handleFile = useCallback((file: File) => {
     if (!file.type.startsWith('image/')) return;
@@ -81,6 +82,59 @@ export default function ImageUpload({ onImageSelected, label, hint, accept = 'im
     };
   }, [stopCamera]);
 
+  // Real-time Face Detection Loop (or Smart Timer Fallback)
+  useEffect(() => {
+    if (!isCameraOpen || !videoRef.current) {
+      setAlignmentState('scanning');
+      return;
+    }
+
+    let isActive = true;
+    let checkInterval: NodeJS.Timeout;
+    let fallbackTimer: NodeJS.Timeout;
+
+    const startDetection = () => {
+      if (!isActive) return;
+
+      if ('FaceDetector' in window) {
+        try {
+          // @ts-ignore - FaceDetector is experimental and not in standard TS types yet
+          const detector = new window.FaceDetector({ fastMode: true, maxDetectedFaces: 1 });
+          
+          checkInterval = setInterval(async () => {
+            if (!isActive || !videoRef.current) return;
+            try {
+              const faces = await detector.detect(videoRef.current);
+              // If a face is found, we consider it aligned/ready
+              setAlignmentState(faces.length > 0 ? 'aligned' : 'scanning');
+            } catch (err) {
+              console.warn("Face detection failed, using fallback", err);
+              clearInterval(checkInterval);
+              fallbackTimer = setTimeout(() => isActive && setAlignmentState('aligned'), 2500);
+            }
+          }, 500); // Check twice a second to save battery
+        } catch (err) {
+          // Fallback if instantiation fails
+          fallbackTimer = setTimeout(() => isActive && setAlignmentState('aligned'), 2500);
+        }
+      } else {
+        // Fallback for iOS/Safari: Simulate a 2.5s "Smart Scan" lock-on
+        fallbackTimer = setTimeout(() => isActive && setAlignmentState('aligned'), 2500);
+      }
+    };
+
+    // We must wait until the video is playing to detect
+    const videoEl = videoRef.current;
+    videoEl.addEventListener('playing', startDetection);
+
+    return () => {
+      isActive = false;
+      videoEl.removeEventListener('playing', startDetection);
+      if (checkInterval) clearInterval(checkInterval);
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+    };
+  }, [isCameraOpen]);
+
   if (isCameraOpen) {
     return (
       <div className="upload-zone" style={{ position: 'relative', overflow: 'hidden', padding: 0 }}>
@@ -90,12 +144,18 @@ export default function ImageUpload({ onImageSelected, label, hint, accept = 'im
           style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }} 
         />
         {/* Face Alignment Guide Overlay */}
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <svg width="200" height="280" viewBox="0 0 200 280" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.6 }}>
-            <ellipse cx="100" cy="140" rx="85" ry="120" stroke="white" strokeWidth="3" strokeDasharray="10 10" />
-            <path d="M 80 120 Q 100 130 120 120" stroke="white" strokeWidth="2" strokeDasharray="4 4" opacity="0.5" />
-            <text x="100" y="30" fill="white" fontSize="14" fontWeight="600" textAnchor="middle" opacity="0.9" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
-              Align Face Here
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease' }}>
+          <svg width="200" height="280" viewBox="0 0 200 280" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: alignmentState === 'aligned' ? 0.9 : 0.6 }}>
+            <ellipse 
+              cx="100" cy="140" rx="85" ry="120" 
+              stroke={alignmentState === 'aligned' ? '#4ade80' : 'white'} 
+              strokeWidth="4" 
+              strokeDasharray={alignmentState === 'aligned' ? 'none' : '10 10'} 
+              style={{ transition: 'all 0.4s ease' }}
+            />
+            <path d="M 80 120 Q 100 130 120 120" stroke={alignmentState === 'aligned' ? '#4ade80' : 'white'} strokeWidth="2" strokeDasharray="4 4" opacity="0.5" />
+            <text x="100" y="30" fill={alignmentState === 'aligned' ? '#4ade80' : 'white'} fontSize="16" fontWeight="700" textAnchor="middle" opacity="0.9" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)', transition: 'all 0.3s ease' }}>
+              {alignmentState === 'aligned' ? '✓ Perfect' : 'Align Face Here'}
             </text>
           </svg>
         </div>
