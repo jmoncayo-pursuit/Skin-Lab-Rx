@@ -21,7 +21,7 @@ export default function ProductCard({ product, scores, onTryOn }: ProductCardPro
       onClick={() => setIsExpanded(!isExpanded)}
       style={{ cursor: 'pointer', flexDirection: 'column' }}
     >
-      <div style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
+      <div style={{ display: 'flex', width: '100%', alignItems: 'center', gap: 16 }}>
       <div className="product-image">
         {product.imageUrl ? (
           <img 
@@ -31,7 +31,7 @@ export default function ProductCard({ product, scores, onTryOn }: ProductCardPro
             onError={(e) => {
               // Fallback to gradient if image fails to load
               e.currentTarget.style.display = 'none';
-              e.currentTarget.parentElement!.innerHTML = `<div style="width: 100%; height: 100%; background: linear-gradient(135deg, ${primaryConcern?.color || '#9BB8CC'}22, ${primaryConcern?.color || '#9BB8CC'}44); display: flex; align-items: center; justify-content: center; font-size: 1.8rem;">${primaryConcern?.icon || '🧴'}</div>`;
+              e.currentTarget.parentElement!.innerHTML = `<div style="width: 100%; height: 100%; background: linear-gradient(135deg, ${primaryConcern?.color || '#9BB8CC'}22, ${primaryConcern?.color || '#9BB8CC'}44); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: ${primaryConcern?.color || '#9BB8CC'}">🧴</div>`;
             }}
           />
         ) : (
@@ -39,9 +39,10 @@ export default function ProductCard({ product, scores, onTryOn }: ProductCardPro
             width: '100%', height: '100%',
             background: `linear-gradient(135deg, ${primaryConcern?.color || '#9BB8CC'}22, ${primaryConcern?.color || '#9BB8CC'}44)`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '1.8rem',
+            fontSize: '2rem',
+            color: primaryConcern?.color || '#9BB8CC'
           }}>
-            {primaryConcern?.icon || '🧴'}
+            🧴
           </div>
         )}
       </div>
