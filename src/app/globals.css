@@ -754,17 +754,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
 }
 
-/* ========== Hero Title — Rainbow backglow around letters ========== */
-@keyframes glow-cycle {
-  0%   { text-shadow: 0 0 20px rgba(110,154,136,0.5), 0 0 40px rgba(110,154,136,0.2); }
-  16%  { text-shadow: 0 0 20px rgba(155,184,204,0.5), 0 0 40px rgba(155,184,204,0.2); }
-  33%  { text-shadow: 0 0 20px rgba(167,139,196,0.5), 0 0 40px rgba(167,139,196,0.2); }
-  50%  { text-shadow: 0 0 20px rgba(196,167,167,0.5), 0 0 40px rgba(196,167,167,0.2); }
-  66%  { text-shadow: 0 0 20px rgba(196,184,123,0.5), 0 0 40px rgba(196,184,123,0.2); }
-  83%  { text-shadow: 0 0 20px rgba(139,175,160,0.5), 0 0 40px rgba(139,175,160,0.2); }
-  100% { text-shadow: 0 0 20px rgba(110,154,136,0.5), 0 0 40px rgba(110,154,136,0.2); }
-}
-
+/* ========== Hero Title — Gradient Text ========== */
 .hero-title {
   font-family: 'Outfit', sans-serif;
   font-size: 2.4rem;
@@ -772,8 +762,13 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.1;
   margin-bottom: 12px;
   letter-spacing: -0.03em;
-  color: #F0F2F5;
-  animation: glow-cycle 8s ease-in-out infinite;
+  
+  /* Elegant horizontal gradient matching the reference */
+  background: linear-gradient(90deg, #3A90F4 0%, #6FA2E1 50%, #CBD99E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
 }
 
 
