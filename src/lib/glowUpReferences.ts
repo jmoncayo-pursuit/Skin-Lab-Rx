@@ -17,6 +17,8 @@ export interface GlowUpLook {
   emoji: string;
   /** The reference image URL for mu-transfer */
   referenceUrl: string;
+  /** Front-end display image (cartoonish/abstract) */
+  coverUrl?: string;
 }
 
 /**
@@ -33,6 +35,7 @@ export const GLOW_UP_LOOKS: GlowUpLook[] = [
     concerns: ['radiance', 'moisture', 'texture', 'age_spot'],
     emoji: '✨',
     referenceUrl: '/glow-ups/radiant.jpg',
+    coverUrl: '/glow-ups/radiant_cartoon.png',
   },
   {
     id: 'clear-skin',
@@ -41,6 +44,7 @@ export const GLOW_UP_LOOKS: GlowUpLook[] = [
     concerns: ['acne', 'pore', 'texture', 'oiliness'],
     emoji: '🪞',
     referenceUrl: '/glow-ups/clear.jpg',
+    coverUrl: '/glow-ups/clear_cartoon.png',
   },
   {
     id: 'youthful-firm',
@@ -49,6 +53,7 @@ export const GLOW_UP_LOOKS: GlowUpLook[] = [
     concerns: ['wrinkle', 'firmness', 'moisture'],
     emoji: '🌸',
     referenceUrl: '/glow-ups/youthful.jpg',
+    coverUrl: '/glow-ups/youthful_cartoon.png',
   },
   {
     id: 'bright-eyes',
@@ -57,6 +62,7 @@ export const GLOW_UP_LOOKS: GlowUpLook[] = [
     concerns: ['dark_circle_v2', 'eye_bag'],
     emoji: '👁️',
     referenceUrl: '/glow-ups/bright-eyes.jpg',
+    coverUrl: '/glow-ups/bright_eyes_cartoon.png',
   },
   {
     id: 'calm-even',
@@ -65,6 +71,7 @@ export const GLOW_UP_LOOKS: GlowUpLook[] = [
     concerns: ['redness', 'texture', 'moisture'],
     emoji: '🩷',
     referenceUrl: '/glow-ups/calm.jpg',
+    coverUrl: '/glow-ups/calm_cartoon.png',
   },
   {
     id: 'spot-free',
@@ -73,6 +80,7 @@ export const GLOW_UP_LOOKS: GlowUpLook[] = [
     concerns: ['age_spot', 'radiance', 'texture'],
     emoji: '☀️',
     referenceUrl: '/glow-ups/spotfree.jpg',
+    coverUrl: '/glow-ups/spotfree_cartoon.png',
   },
 ];
 

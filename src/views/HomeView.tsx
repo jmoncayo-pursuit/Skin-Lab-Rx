@@ -23,7 +23,7 @@ export default function HomeView({ state, onNavigate }: HomeViewProps) {
           Skin Lab Rx
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, maxWidth: 320, margin: '0 auto' }}>
-          AI-powered skin analysis, personalized product recommendations, and virtual try-on — all from a single selfie.
+          AI-powered skin analysis, personalized product recommendations, and virtual try-on all from a single selfie.
         </p>
       </div>
 

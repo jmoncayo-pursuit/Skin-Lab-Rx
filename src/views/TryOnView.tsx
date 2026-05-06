@@ -422,7 +422,7 @@ export default function TryOnView({ state, updateState, onNavigate }: TryOnViewP
                     position: 'relative',
                   }}>
                     <img
-                      src={look.referenceUrl}
+                      src={look.coverUrl || look.referenceUrl}
                       alt={look.name}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
@@ -491,7 +491,7 @@ export default function TryOnView({ state, updateState, onNavigate }: TryOnViewP
         disabled={!targetFile || (!selectedLook && !refFile)}
         onClick={handleTryOn}
       >
-        {product ? '✨ Preview Glow-Up' : '💄 Apply Look'}
+        {product ? '✨ Preview Glow-Up' : '🧴 Apply Look'}
       </button>
 
       <div style={{
