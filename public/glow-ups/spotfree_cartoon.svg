@@ -1,31 +1,42 @@
 <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <!-- Vibrant split gradient -->
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="30%" stop-color="#FFE4E1" />
-      <stop offset="100%" stop-color="#FFDEAD" />
-    </linearGradient>
-  </defs>
-  
-  <rect width="200" height="200" fill="#F7FAFC" rx="32" />
+  <!-- Rounded container background -->
+  <rect width="200" height="200" fill="#FFFAF0" rx="32" />
   
   <g transform="translate(100, 100)">
-    <!-- Quirky geometric background element -->
-    <circle cx="-35" cy="-45" r="18" fill="#FFDEAD" opacity="0.8" stroke="#2D3748" stroke-width="3"/>
-    <rect x="25" y="35" width="28" height="28" fill="#FFE4E1" opacity="0.8" stroke="#2D3748" stroke-width="3" rx="8" transform="rotate(15)" />
     
-    <!-- Base Shape -->
-    <circle cx="0" cy="0" r="55" fill="url(#grad)" stroke="#2D3748" stroke-width="5" />
+      <!-- Split diagonal Face -->
+      <clipPath id="spotfree-clip">
+        <ellipse cx="0" cy="0" rx="60" ry="75" />
+      </clipPath>
+      
+      <ellipse cx="0" cy="0" rx="60" ry="75" fill="#FFFBF0" stroke="#2D3748" stroke-width="5" />
+      
+      <!-- Spots on bottom right diagonal -->
+      <g clip-path="url(#spotfree-clip)">
+        <polygon points="60,-75 60,75 -60,75" fill="#FEEBC8" />
+        <line x1="60" y1="-75" x2="-60" y2="75" stroke="#2D3748" stroke-width="3" />
+        
+        <!-- Freckles/Spots -->
+        <circle cx="10" cy="10" r="2.5" fill="#9C4221" opacity="0.6" />
+        <circle cx="30" cy="5" r="3.5" fill="#9C4221" opacity="0.5" />
+        <circle cx="20" cy="25" r="2" fill="#9C4221" opacity="0.7" />
+        <circle cx="45" cy="20" r="4" fill="#9C4221" opacity="0.4" />
+        <circle cx="35" cy="40" r="2.5" fill="#9C4221" opacity="0.6" />
+        <circle cx="15" cy="45" r="3" fill="#9C4221" opacity="0.5" />
+        <circle cx="0" cy="30" r="2" fill="#9C4221" opacity="0.5" />
+      </g>
+      
+      <!-- Re-stroke the base to be above the clip -->
+      <ellipse cx="0" cy="0" rx="60" ry="75" fill="none" stroke="#2D3748" stroke-width="5" />
+      
+      <!-- Cheeks -->
+      <ellipse cx="-30" cy="15" rx="10" ry="6" fill="#FFB6C1" opacity="0.6" />
+      <ellipse cx="30" cy="15" rx="10" ry="6" fill="#FFB6C1" opacity="0.6" />
+      
+      <!-- Eyes & Smile -->
+      <circle cx="-20" cy="-5" r="5" fill="#2D3748" />
+      <circle cx="20" cy="-5" r="5" fill="#2D3748" />
+      <path d="M -8 15 Q 0 25 8 15" fill="none" stroke="#2D3748" stroke-width="4" stroke-linecap="round" />
     
-    <!-- Cheeks (classic AT rosy ovals) -->
-    <ellipse cx="-35" cy="10" rx="10" ry="6" fill="#FF69B4" opacity="0.6" />
-    <ellipse cx="35" cy="10" rx="10" ry="6" fill="#FF69B4" opacity="0.6" />
-    
-    <!-- Eyes (Thick black dots, widely spaced) -->
-    <circle cx="-25" cy="-5" r="6.5" fill="#2D3748" />
-    <circle cx="25" cy="-5" r="6.5" fill="#2D3748" />
-    
-    <!-- Mouth (Simple cute curve, no nose) -->
-    <path d="M -8 18 Q 0 28 8 18" fill="none" stroke="#2D3748" stroke-width="4.5" stroke-linecap="round" />
   </g>
 </svg>

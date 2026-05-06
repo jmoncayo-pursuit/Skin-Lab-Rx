@@ -1,31 +1,30 @@
 <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <!-- Vibrant split gradient -->
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="30%" stop-color="#FAF089" />
-      <stop offset="100%" stop-color="#FFC0CB" />
-    </linearGradient>
-  </defs>
-  
-  <rect width="200" height="200" fill="#F7FAFC" rx="32" />
+  <!-- Rounded container background -->
+  <rect width="200" height="200" fill="#FFFFF0" rx="32" />
   
   <g transform="translate(100, 100)">
-    <!-- Quirky geometric background element -->
-    <circle cx="-35" cy="-45" r="18" fill="#FFC0CB" opacity="0.8" stroke="#2D3748" stroke-width="3"/>
-    <rect x="25" y="35" width="28" height="28" fill="#FAF089" opacity="0.8" stroke="#2D3748" stroke-width="3" rx="8" transform="rotate(15)" />
     
-    <!-- Base Shape -->
-    <rect x="-70" y="-45" width="140" height="90" rx="45" fill="url(#grad)" stroke="#2D3748" stroke-width="5" />
+      <!-- Base Face -->
+      <ellipse cx="0" cy="0" rx="60" ry="75" fill="#FFFBF0" stroke="#2D3748" stroke-width="5" />
+      
+      <!-- Under-eye brightening swooshes -->
+      <path d="M -35 15 Q -20 25 -5 15" fill="none" stroke="#90CDF4" stroke-width="6" stroke-linecap="round" opacity="0.7" />
+      <path d="M 5 15 Q 20 25 35 15" fill="none" stroke="#90CDF4" stroke-width="6" stroke-linecap="round" opacity="0.7" />
+      
+      <!-- Giant Sparkly Anime Eyes -->
+      <circle cx="-20" cy="-5" r="16" fill="#2D3748" />
+      <circle cx="-24" cy="-9" r="6" fill="#FFFFFF" />
+      <circle cx="-14" cy="2" r="3" fill="#FFFFFF" />
+      
+      <circle cx="20" cy="-5" r="16" fill="#2D3748" />
+      <circle cx="16" cy="-9" r="6" fill="#FFFFFF" />
+      <circle cx="26" cy="2" r="3" fill="#FFFFFF" />
+      
+      <!-- Sparkle top right -->
+      <path d="M 50 -50 Q 60 -50 60 -60 Q 60 -50 70 -50 Q 60 -50 60 -40 Q 60 -50 50 -50" fill="#F6AD55" />
+      
+      <!-- Smile -->
+      <path d="M -6 25 Q 0 32 6 25" fill="none" stroke="#2D3748" stroke-width="3" stroke-linecap="round" />
     
-    <!-- Cheeks (classic AT rosy ovals) -->
-    <ellipse cx="-35" cy="10" rx="10" ry="6" fill="#FF69B4" opacity="0.6" />
-    <ellipse cx="35" cy="10" rx="10" ry="6" fill="#FF69B4" opacity="0.6" />
-    
-    <!-- Eyes (Thick black dots, widely spaced) -->
-    <circle cx="-25" cy="-5" r="6.5" fill="#2D3748" />
-    <circle cx="25" cy="-5" r="6.5" fill="#2D3748" />
-    
-    <!-- Mouth (Simple cute curve, no nose) -->
-    <path d="M -8 18 Q 0 28 8 18" fill="none" stroke="#2D3748" stroke-width="4.5" stroke-linecap="round" />
   </g>
 </svg>
