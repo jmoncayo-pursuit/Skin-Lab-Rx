@@ -20,14 +20,22 @@ export default function ProductsView({ state, onNavigate, updateState }: Product
 
   if (!scores || Object.keys(scores).length === 0) {
     return (
-      <div className="container" style={{ paddingTop: 48, textAlign: 'center' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: 12 }}>Product Recommendations</h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: 32 }}>
-          Complete a skin analysis first to get personalized product matches.
+      <div className="container" style={{ paddingTop: 48 }}>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: 8 }}>Catalog</h1>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: 24 }}>
+          Browse our clinical skincare. For personalized matches, <a style={{color: 'var(--accent-glow)', cursor: 'pointer', textDecoration: 'underline'}} onClick={() => onNavigate('analyze')}>start a skin analysis</a>.
         </p>
-        <button className="btn-primary" onClick={() => onNavigate('analyze')}>
-          🔬 Start Analysis
-        </button>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
+          {PRODUCT_DATABASE.map(product => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              scores={{}}
+              onTryOn={() => handleTryOn(product)}
+            />
+          ))}
+        </div>
       </div>
     );
   }
