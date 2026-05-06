@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "Skin Lab Rx — AI Skin Analysis & Product Recommender",
@@ -24,6 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
+        <ThemeToggle />
         <div className="ambient-bg" aria-hidden="true" />
         {children}
       </body>
