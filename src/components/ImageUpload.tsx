@@ -27,9 +27,21 @@ export default function ImageUpload({ onImageSelected, label, hint, accept = 'im
     e.stopPropagation();
     setCameraError(null);
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 1280 } } 
-      });
+      let stream: MediaStream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 1280 } } 
+        });
+      } catch (e) {
+        console.warn("High-res constraints failed, falling back to basic front camera", e);
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+        } catch (e2) {
+          console.warn("Front camera not found, falling back to any available camera", e2);
+          stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        }
+      }
+
       setIsCameraOpen(true);
       // Wait a tick for the video element to mount
       setTimeout(() => {
@@ -38,9 +50,9 @@ export default function ImageUpload({ onImageSelected, label, hint, accept = 'im
           videoRef.current.play();
         }
       }, 50);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Camera access denied or unavailable", err);
-      setCameraError("Camera access denied. Please allow permissions or upload a file.");
+      setCameraError(`Camera Error: ${err.name || 'Unavailable'}. Please check permissions or upload a photo.`);
     }
   };
 
