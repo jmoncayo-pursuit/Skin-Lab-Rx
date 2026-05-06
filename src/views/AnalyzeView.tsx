@@ -32,6 +32,28 @@ export default function AnalyzeView({ state, updateState, onNavigate }: AnalyzeV
       const processedFile = new File([blob], 'selfie.jpg', { type: 'image/jpeg' });
       updateState({ selfiePreview: processedPreview, selfieFile: processedFile });
 
+      // --- HACKATHON TEST MODE BYPASS ---
+      // Run this in browser console to enable: localStorage.setItem('TEST_MODE', 'true')
+      if (typeof window !== 'undefined' && localStorage.getItem('TEST_MODE') === 'true') {
+        console.warn("TEST_MODE IS ACTIVE: Bypassing real API to save credits.");
+        setTimeout(() => {
+          updateState({
+            analysisScores: {
+              redness: { ui_score: 35, raw_score: 0 },
+              dark_circle_v2: { ui_score: 42, raw_score: 0 },
+              wrinkle: { ui_score: 65, raw_score: 0 },
+              texture: { ui_score: 72, raw_score: 0 },
+              radiance: { ui_score: 55, raw_score: 0 }
+            },
+            overallScore: 54,
+            skinAge: 32,
+            selfiePreview: processedPreview
+          });
+          setPhase('results');
+        }, 2000);
+        return;
+      }
+
       const formData = new FormData();
       formData.append('image', processedFile);
 

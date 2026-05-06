@@ -112,6 +112,8 @@ export default function TryOnView({ state, updateState, onNavigate }: TryOnViewP
 
       if (!res.ok) throw new Error(data.error || 'Try-on failed');
 
+
+
       // Extract result URL from response
       const results = data.data?.results;
       let url = '';

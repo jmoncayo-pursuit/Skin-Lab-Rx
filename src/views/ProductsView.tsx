@@ -48,7 +48,7 @@ export default function ProductsView({ state, onNavigate, updateState }: Product
       </p>
 
       {/* Top Concerns Tags */}
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 24 }}>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
         {sortedConcerns.map(([key, val]) => {
           const concern = SKIN_CONCERNS.find(c => c.key === key);
           return (
@@ -57,6 +57,19 @@ export default function ProductsView({ state, onNavigate, updateState }: Product
             </span>
           );
         })}
+      </div>
+
+      <div className="glass-card fade-in-up" style={{ padding: 16, marginBottom: 32, background: 'linear-gradient(135deg, rgba(155,184,204,0.1), rgba(139,175,160,0.05))', border: '1px solid var(--border-accent)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+          <span style={{ fontSize: '1.2rem' }}>💡</span>
+          <span style={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 700 }}>
+            Why these products?
+          </span>
+        </div>
+        <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
+          Your AI scan identified <strong>{sortedConcerns.map(([k]) => SKIN_CONCERNS.find(c => c.key === k)?.label || k).join(', ')}</strong> as your primary areas for improvement. 
+          The products below were specifically filtered because they contain clinical active ingredients proven to target these exact concerns.
+        </p>
       </div>
 
       {/* Recommended Products */}
