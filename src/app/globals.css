@@ -16,9 +16,9 @@
   --gradient-glow: radial-gradient(ellipse at center, rgba(58, 144, 244, 0.15), transparent 70%);
   
   /* Text colors - Light mode */
-  --text-primary: #1A202C; /* Dark text for readability */
-  --text-secondary: #4A5568;
-  --text-muted: #A0AEC0;
+  --text-primary: #0F172A; /* Deep slate, almost black */
+  --text-secondary: #334155; /* Dark gray for secondary text */
+  --text-muted: #475569; /* Medium dark gray so it's fully legible on white */
   --text-accent: #3A90F4;
   
   /* Borders */
