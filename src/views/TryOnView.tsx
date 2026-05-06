@@ -491,7 +491,7 @@ export default function TryOnView({ state, updateState, onNavigate }: TryOnViewP
         disabled={!targetFile || (!selectedLook && !refFile)}
         onClick={handleTryOn}
       >
-        {product ? '✨ Preview Glow-Up' : '🧴 Apply Look'}
+        {product ? '✨ Try On Glow-Up' : '🪄 Apply Look'}
       </button>
 
       <div style={{

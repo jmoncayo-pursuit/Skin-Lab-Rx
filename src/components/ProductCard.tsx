@@ -65,7 +65,7 @@ export default function ProductCard({ product, scores, onTryOn }: ProductCardPro
           title="Virtual Try-On"
           style={{ alignSelf: 'center' }}
         >
-          🧴
+          🪄
         </button>
       )}
     </div>

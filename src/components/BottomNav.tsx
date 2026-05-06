@@ -9,7 +9,7 @@ const tabs = [
   { id: 'home', icon: '🏠', label: 'Home' },
   { id: 'analyze', icon: '🔬', label: 'Analyze' },
   { id: 'products', icon: '✨', label: 'Products' },
-  { id: 'tryon', icon: '🧴', label: 'Preview' },
+  { id: 'tryon', icon: '🪄', label: 'Try On' },
 ];
 
 export default function BottomNav({ active, onNavigate }: BottomNavProps) {
