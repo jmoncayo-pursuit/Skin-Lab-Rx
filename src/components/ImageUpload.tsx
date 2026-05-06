@@ -146,8 +146,51 @@ export default function ImageUpload({ onImageSelected, label, hint, accept = 'im
           fallbackTimer = setTimeout(() => isActive && setAlignmentState('aligned'), 2500);
         }
       } else {
-        // Fallback for iOS/Safari: Simulate a 2.5s "Smart Scan" lock-on
-        fallbackTimer = setTimeout(() => isActive && setAlignmentState('aligned'), 2500);
+        // Fallback for iOS/Safari: Motion Detection (Holding still = Aligned)
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        let lastImageData: ImageData | null = null;
+        let stillnessFrames = 0;
+
+        checkInterval = setInterval(() => {
+          if (!isActive || !videoRef.current || !ctx) return;
+          const video = videoRef.current;
+          if (video.videoWidth === 0 || video.videoHeight === 0) return;
+
+          // Downsample heavily for fast processing
+          canvas.width = 64;
+          canvas.height = 64;
+          ctx.drawImage(video, 0, 0, 64, 64);
+          const currentData = ctx.getImageData(0, 0, 64, 64);
+
+          if (lastImageData) {
+            let diff = 0;
+            for (let i = 0; i < currentData.data.length; i += 4) {
+              diff += Math.abs(currentData.data[i] - lastImageData.data[i]);
+              diff += Math.abs(currentData.data[i+1] - lastImageData.data[i+1]);
+              diff += Math.abs(currentData.data[i+2] - lastImageData.data[i+2]);
+            }
+            
+            // Average pixel color difference
+            const avgDiff = diff / (64 * 64 * 3);
+            
+            // If avgDiff is low, the user is holding still
+            if (avgDiff < 15) {
+              stillnessFrames++;
+            } else {
+              stillnessFrames = 0;
+            }
+
+            // If held still for 3 consecutive intervals (1.5 seconds) -> Aligned!
+            // If they move the camera away -> back to Scanning!
+            if (stillnessFrames >= 3) {
+              setAlignmentState('aligned');
+            } else {
+              setAlignmentState('scanning');
+            }
+          }
+          lastImageData = currentData;
+        }, 500);
       }
     };
 
