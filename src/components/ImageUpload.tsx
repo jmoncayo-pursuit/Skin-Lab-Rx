@@ -104,13 +104,41 @@ export default function ImageUpload({ onImageSelected, label, hint, accept = 'im
           checkInterval = setInterval(async () => {
             if (!isActive || !videoRef.current) return;
             try {
-              const faces = await detector.detect(videoRef.current);
-              // If a face is found, we consider it aligned/ready
-              setAlignmentState(faces.length > 0 ? 'aligned' : 'scanning');
+              const video = videoRef.current;
+              const faces = await detector.detect(video);
+              
+              if (faces.length > 0) {
+                // Check if the face is somewhat centered
+                const face = faces[0];
+                const box = face.boundingBox;
+                
+                // Calculate center of face and center of video
+                const faceCenterX = box.x + (box.width / 2);
+                const faceCenterY = box.y + (box.height / 2);
+                
+                // Video dimensions (intrinsic)
+                const vidW = video.videoWidth;
+                const vidH = video.videoHeight;
+                
+                // Acceptable center zone (middle 40%)
+                const minX = vidW * 0.3;
+                const maxX = vidW * 0.7;
+                const minY = vidH * 0.2;
+                const maxY = vidH * 0.8;
+                
+                const isCentered = faceCenterX >= minX && faceCenterX <= maxX && 
+                                   faceCenterY >= minY && faceCenterY <= maxY;
+                                   
+                // Face must also take up a reasonable portion of the screen (not too far)
+                const isGoodSize = box.width >= vidW * 0.25;
+                
+                setAlignmentState((isCentered && isGoodSize) ? 'aligned' : 'scanning');
+              } else {
+                setAlignmentState('scanning');
+              }
             } catch (err) {
               console.warn("Face detection failed, using fallback", err);
               clearInterval(checkInterval);
-              fallbackTimer = setTimeout(() => isActive && setAlignmentState('aligned'), 2500);
             }
           }, 500); // Check twice a second to save battery
         } catch (err) {

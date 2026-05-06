@@ -55,7 +55,7 @@ async function uploadFile(imageBuffer: Buffer, contentType: string, fileName: st
   const uploadRes = await fetch(uploadReq.url, {
     method: uploadReq.method,
     headers: uploadHeaders,
-    body: imageBuffer,
+    body: imageBuffer as unknown as BodyInit,
   });
 
   if (!uploadRes.ok) {
