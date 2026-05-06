@@ -18,6 +18,7 @@ export default function AnalyzeView({ state, updateState, onNavigate }: AnalyzeV
   const [phase, setPhase] = useState<Phase>(state.analysisScores ? 'results' : 'upload');
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(state.selfiePreview);
+  const [expandedConcern, setExpandedConcern] = useState<string | null>(null);
 
   const handleAnalyze = useCallback(async (file: File, _previewUrl: string) => {
     setPhase('analyzing');
@@ -204,23 +205,30 @@ export default function AnalyzeView({ state, updateState, onNavigate }: AnalyzeV
     <div className="container" style={{ paddingTop: 48, paddingBottom: 24 }}>
       <h1 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: 24 }}>Your Results</h1>
 
-      {/* Overall Score */}
+      {/* Overall Score & Analyzed Photo */}
       <div className="glass-card fade-in-up" style={{
-        padding: 24, textAlign: 'center', marginBottom: 20,
+        padding: '16px 24px', textAlign: 'center', marginBottom: 20,
         background: 'linear-gradient(135deg, rgba(155,184,204,0.06), rgba(139,175,160,0.04))',
       }}>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 32, alignItems: 'center' }}>
-          <ScoreRing score={Math.round(state.overallScore || 0)} label="Overall" size={100} />
-          {state.skinAge !== null && state.skinAge > 0 && (
-            <div>
-              <div style={{ fontFamily: 'Outfit', fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-accent)' }}>
-                {state.skinAge}
-              </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                Skin Age
-              </div>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 24, alignItems: 'center' }}>
+          {state.selfiePreview && (
+            <div style={{ width: 72, height: 96, borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border-accent)', flexShrink: 0, boxShadow: 'var(--shadow-card)' }}>
+              <img src={state.selfiePreview} alt="Analyzed" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+            <ScoreRing score={Math.round(state.overallScore || 0)} label="Overall" size={100} />
+            {state.skinAge !== null && state.skinAge > 0 && (
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontFamily: 'Outfit', fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-accent)', lineHeight: 1 }}>
+                  {state.skinAge}
+                </div>
+                <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginTop: 4 }}>
+                  Skin Age
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -238,29 +246,66 @@ export default function AnalyzeView({ state, updateState, onNavigate }: AnalyzeV
               const concern = SKIN_CONCERNS.find(c => c.key === key);
               const color = getScoreColor(val.ui_score);
               const label = getScoreLabel(val.ui_score);
+              const isExpanded = expandedConcern === key;
               return (
                 <div key={key} className={`glass-card fade-in-up stagger-${Math.min(i + 1, 6)}`}
-                  style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12 }}
+                  style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 0, cursor: 'pointer', transition: 'all 0.3s ease' }}
+                  onClick={() => setExpandedConcern(isExpanded ? null : key)}
                 >
-                  <span style={{ fontSize: '1.1rem', width: 28, textAlign: 'center' }}>
-                    {concern?.icon || '•'}
-                  </span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                      <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>
-                        {concern?.label || key}
-                      </span>
-                      <span style={{ fontSize: '0.75rem', color, fontWeight: 600 }}>
-                        {val.ui_score} · {label}
-                      </span>
-                    </div>
-                    <div className="progress-bar">
-                      <div className="fill" style={{
-                        width: `${val.ui_score}%`,
-                        background: `linear-gradient(90deg, ${color}, ${color}88)`,
-                      }} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%' }}>
+                    <span style={{ fontSize: '1.2rem', width: 28, textAlign: 'center' }}>
+                      {concern?.icon || '•'}
+                    </span>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                        <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>
+                          {concern?.label || key}
+                        </span>
+                        <span style={{ fontSize: '0.75rem', color, fontWeight: 700 }}>
+                          {val.ui_score} · {label}
+                        </span>
+                      </div>
+                      <div className="progress-bar">
+                        <div className="fill" style={{
+                          width: `${val.ui_score}%`,
+                          background: `linear-gradient(90deg, ${color}, ${color}88)`,
+                        }} />
+                      </div>
                     </div>
                   </div>
+                  
+                  {isExpanded && (
+                    <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid var(--border-subtle)' }} onClick={e => e.stopPropagation()}>
+                      <p style={{ fontSize: '0.8rem', color: 'var(--text-primary)', fontWeight: 600, marginBottom: 4 }}>Analysis Detail</p>
+                      <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: 12, lineHeight: 1.5 }}>
+                        Based on your scan, your score for <strong>{concern?.label || key}</strong> is {val.ui_score}/100. 
+                        {val.ui_score < 70 ? ` This is an area that would benefit from targeted care. ${concern?.description || ''}` : ` Your skin is performing very well here. Maintaining a solid routine will help preserve these results.`}
+                      </p>
+                      
+                      <p style={{ fontSize: '0.8rem', color: 'var(--text-primary)', fontWeight: 600, marginBottom: 4 }}>Recommendation</p>
+                      <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: 12, lineHeight: 1.5 }}>
+                        {val.ui_score < 70 ? `Consider incorporating active ingredients designed to address ${concern?.label.toLowerCase() || key}.` : `Continue your current regimen to support ${concern?.label.toLowerCase() || key}.`}
+                      </p>
+                      
+                      <button className="btn-secondary" style={{ width: '100%', fontSize: '0.8rem', padding: '10px', background: 'var(--bg-primary)' }} onClick={() => {
+                        updateState({ 
+                          selectedProduct: { 
+                            id: `target-${key}`, 
+                            name: `Targeted ${concern?.label || key} Treatment`, 
+                            brand: 'SkinLab Clinical', 
+                            category: 'Treatment', 
+                            concerns: [key], 
+                            description: `Targeted formula for ${concern?.label.toLowerCase() || key}.`, 
+                            ingredients: [], 
+                            imageUrl: '' 
+                          } 
+                        });
+                        onNavigate('tryon');
+                      }}>
+                        🪞 Try On Virtual Treatment
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })}
