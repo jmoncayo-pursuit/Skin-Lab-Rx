@@ -89,6 +89,16 @@ export default function ImageUpload({ onImageSelected, label, hint, accept = 'im
           playsInline 
           style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }} 
         />
+        {/* Face Alignment Guide Overlay */}
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <svg width="200" height="280" viewBox="0 0 200 280" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.6 }}>
+            <ellipse cx="100" cy="140" rx="85" ry="120" stroke="white" strokeWidth="3" strokeDasharray="10 10" />
+            <path d="M 80 120 Q 100 130 120 120" stroke="white" strokeWidth="2" strokeDasharray="4 4" opacity="0.5" />
+            <text x="100" y="30" fill="white" fontSize="14" fontWeight="600" textAnchor="middle" opacity="0.9" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
+              Align Face Here
+            </text>
+          </svg>
+        </div>
         <div style={{ position: 'absolute', bottom: 20, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 16 }}>
           <button className="btn-secondary" onClick={(e) => { e.stopPropagation(); stopCamera(); }}>
             Cancel
