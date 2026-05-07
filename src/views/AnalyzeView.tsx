@@ -5,6 +5,7 @@ import ImageUpload from '@/components/ImageUpload';
 import ScoreRing from '@/components/ScoreRing';
 import { SKIN_CONCERNS, getScoreColor, getScoreLabel } from '@/lib/types';
 import { processImageForAnalysis } from '@/lib/imageProcessing';
+import { PRODUCT_DATABASE } from '@/lib/products';
 
 interface AnalyzeViewProps {
   state: AppState;
@@ -312,23 +313,33 @@ export default function AnalyzeView({ state, updateState, onNavigate }: AnalyzeV
                         {val.ui_score < 70 ? `Consider incorporating active ingredients designed to address ${concern?.label.toLowerCase() || key}.` : `Continue your current regimen to support ${concern?.label.toLowerCase() || key}.`}
                       </p>
                       
-                      <button className="btn-secondary" style={{ width: '100%', fontSize: '0.8rem', padding: '10px', background: 'var(--bg-primary)' }} onClick={() => {
-                        updateState({ 
-                          selectedProduct: { 
-                            id: `target-${key}`, 
-                            name: `Targeted ${concern?.label || key} Treatment`, 
-                            brand: 'SkinLab Clinical', 
-                            category: 'Treatment', 
-                            concerns: [key], 
-                            description: `Targeted formula for ${concern?.label.toLowerCase() || key}.`, 
-                            ingredients: [], 
-                            imageUrl: '' 
-                          } 
-                        });
-                        onNavigate('tryon');
-                      }}>
-                        🪞 Try On Virtual Treatment
-                      </button>
+                      {(() => {
+                        const recs = PRODUCT_DATABASE.filter(p => p.concerns.includes(key)).slice(0, 2);
+                        if (recs.length === 0) return null;
+                        return (
+                          <>
+                            <p style={{ fontSize: '0.8rem', color: 'var(--text-primary)', fontWeight: 600, marginBottom: 8, marginTop: 16 }}>Targeted Products</p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                              {recs.map(prod => (
+                                <div key={prod.id} style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'rgba(255,255,255,0.03)', padding: 8, borderRadius: 'var(--radius-md)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                  <img src={prod.imageUrl} alt={prod.name} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} />
+                                  <div style={{ flex: 1 }}>
+                                    <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)' }}>{prod.name}</div>
+                                    <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>{prod.brand}</div>
+                                  </div>
+                                  <button className="btn-secondary" style={{ padding: '6px 12px', fontSize: '0.7rem' }} onClick={(e) => {
+                                    e.stopPropagation();
+                                    updateState({ selectedProduct: prod });
+                                    onNavigate('products');
+                                  }}>
+                                    View
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </>
+                        );
+                      })()}
                     </div>
                   )}
                 </div>
