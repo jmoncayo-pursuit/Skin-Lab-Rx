@@ -291,7 +291,7 @@ export default function ImageUpload({ onImageSelected, label, hint, accept = 'im
             />
             <path d="M 80 120 Q 100 130 120 120" stroke={alignmentState === 'aligned' ? '#4ade80' : 'white'} strokeWidth="2" strokeDasharray="4 4" opacity="0.5" />
             <text x="100" y="30" fill={alignmentState === 'aligned' ? '#4ade80' : 'white'} fontSize="16" fontWeight="700" textAnchor="middle" opacity="0.9" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
-              {alignmentState === 'aligned' ? '✓ Perfect' : 'Align Face Here'}
+              {alignmentState === 'aligned' ? '✓ Perfect' : 'Move Face into Frame'}
             </text>
             <text x="100" y="-5" fill="rgba(255,255,255,0.7)" fontSize="11" fontWeight="600" textAnchor="middle" opacity="0.9" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>
               (Drag to move)
@@ -302,8 +302,17 @@ export default function ImageUpload({ onImageSelected, label, hint, accept = 'im
           <button className="btn-secondary" onClick={(e) => { e.stopPropagation(); stopCamera(); }}>
             Cancel
           </button>
-          <button className="btn-primary" onClick={takePhoto}>
-            📸 Snap
+          <button 
+            className="btn-primary" 
+            onClick={takePhoto}
+            disabled={alignmentState !== 'aligned'}
+            style={{ 
+              opacity: alignmentState === 'aligned' ? 1 : 0.6,
+              background: alignmentState === 'aligned' ? 'var(--accent-glow)' : 'var(--bg-secondary)',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            {alignmentState === 'aligned' ? '📸 Snap' : 'Waiting for face...'}
           </button>
         </div>
       </div>
