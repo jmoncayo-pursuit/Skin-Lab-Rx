@@ -15,6 +15,10 @@ export default function ImageUpload({ onImageSelected, label, hint, accept = 'im
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [alignmentState, setAlignmentState] = useState<'scanning' | 'aligned'>('scanning');
+  
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const offsetRef = useRef({ x: 0, y: 0 });
+  const dragState = useRef({ isDragging: false, startX: 0, startY: 0, startOffsetX: 0, startOffsetY: 0 });
 
   const handleFile = useCallback((file: File) => {
     if (!file.type.startsWith('image/')) return;
@@ -132,11 +136,24 @@ export default function ImageUpload({ onImageSelected, label, hint, accept = 'im
                 const vidW = video.videoWidth;
                 const vidH = video.videoHeight;
                 
-                // Acceptable center zone (middle 40%)
-                const minX = vidW * 0.3;
-                const maxX = vidW * 0.7;
-                const minY = vidH * 0.2;
-                const maxY = vidH * 0.8;
+                // Calculate target center based on drag offset
+                const rect = video.getBoundingClientRect();
+                const offsetXRatio = offsetRef.current.x / rect.width;
+                const offsetYRatio = offsetRef.current.y / rect.height;
+                
+                // Video is mirrored via CSS scaleX(-1), so dragging right (positive X) 
+                // means the physical target moves left in intrinsic video coordinates!
+                const targetCenterXRatio = 0.5 - offsetXRatio;
+                const targetCenterYRatio = 0.5 + offsetYRatio;
+                
+                const targetX = vidW * targetCenterXRatio;
+                const targetY = vidH * targetCenterYRatio;
+
+                // Acceptable zone (middle 40% around the new target)
+                const minX = targetX - (vidW * 0.2);
+                const maxX = targetX + (vidW * 0.2);
+                const minY = targetY - (vidH * 0.3);
+                const maxY = targetY + (vidH * 0.3);
                 
                 const isCentered = faceCenterX >= minX && faceCenterX <= maxX && 
                                    faceCenterY >= minY && faceCenterY <= maxY;
@@ -226,19 +243,58 @@ export default function ImageUpload({ onImageSelected, label, hint, accept = 'im
           playsInline 
           style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }} 
         />
-        {/* Face Alignment Guide Overlay */}
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease' }}>
-          <svg width="200" height="280" viewBox="0 0 200 280" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: alignmentState === 'aligned' ? 0.9 : 0.6 }}>
+        {/* Face Alignment Guide Overlay - Draggable */}
+        <div 
+          style={{ 
+            position: 'absolute', inset: 0, 
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', 
+            transition: dragState.current.isDragging ? 'none' : 'opacity 0.3s ease',
+            cursor: dragState.current.isDragging ? 'grabbing' : 'grab',
+            touchAction: 'none'
+          }}
+          onPointerDown={(e) => {
+            dragState.current.isDragging = true;
+            dragState.current.startX = e.clientX;
+            dragState.current.startY = e.clientY;
+            dragState.current.startOffsetX = offsetRef.current.x;
+            dragState.current.startOffsetY = offsetRef.current.y;
+            e.currentTarget.setPointerCapture(e.pointerId);
+          }}
+          onPointerMove={(e) => {
+            if (!dragState.current.isDragging) return;
+            const dx = e.clientX - dragState.current.startX;
+            const dy = e.clientY - dragState.current.startY;
+            const newX = dragState.current.startOffsetX + dx;
+            const newY = dragState.current.startOffsetY + dy;
+            offsetRef.current = { x: newX, y: newY };
+            setDragOffset({ x: newX, y: newY });
+          }}
+          onPointerUp={(e) => {
+            dragState.current.isDragging = false;
+            e.currentTarget.releasePointerCapture(e.pointerId);
+          }}
+        >
+          <svg 
+            width="200" height="280" viewBox="0 0 200 280" fill="none" xmlns="http://www.w3.org/2000/svg" 
+            style={{ 
+              opacity: alignmentState === 'aligned' ? 0.9 : 0.6,
+              transform: `translate(${dragOffset.x}px, ${dragOffset.y}px)`,
+              pointerEvents: 'none'
+            }}
+          >
             <ellipse 
               cx="100" cy="140" rx="85" ry="120" 
               stroke={alignmentState === 'aligned' ? '#4ade80' : 'white'} 
               strokeWidth="4" 
               strokeDasharray={alignmentState === 'aligned' ? 'none' : '10 10'} 
-              style={{ transition: 'all 0.4s ease' }}
+              style={{ transition: 'stroke 0.4s ease, stroke-dasharray 0.4s ease' }}
             />
             <path d="M 80 120 Q 100 130 120 120" stroke={alignmentState === 'aligned' ? '#4ade80' : 'white'} strokeWidth="2" strokeDasharray="4 4" opacity="0.5" />
-            <text x="100" y="30" fill={alignmentState === 'aligned' ? '#4ade80' : 'white'} fontSize="16" fontWeight="700" textAnchor="middle" opacity="0.9" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)', transition: 'all 0.3s ease' }}>
+            <text x="100" y="30" fill={alignmentState === 'aligned' ? '#4ade80' : 'white'} fontSize="16" fontWeight="700" textAnchor="middle" opacity="0.9" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
               {alignmentState === 'aligned' ? '✓ Perfect' : 'Align Face Here'}
+            </text>
+            <text x="100" y="-5" fill="rgba(255,255,255,0.7)" fontSize="11" fontWeight="600" textAnchor="middle" opacity="0.9" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>
+              (Drag to move)
             </text>
           </svg>
         </div>
