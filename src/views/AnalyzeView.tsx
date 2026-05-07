@@ -129,11 +129,11 @@ export default function AnalyzeView({ state, updateState, onNavigate }: AnalyzeV
       let msg = err instanceof Error ? err.message : 'Something went wrong';
       // Map API error codes to friendly messages
       if (msg.includes('error_src_face_too_small')) {
-        msg = 'Your face needs to fill more of the frame. Try a closer selfie with your face centered.';
+        msg = 'Scan rejected: Face too small or obstructed. Please upload a closer selfie. If you are wearing glasses, please remove them for the analysis.';
       } else if (msg.includes('error_lighting_dark')) {
-        msg = 'The photo is too dark. Please retake in a well-lit environment.';
-      } else if (msg.includes('error_src_face_out_of_bound')) {
-        msg = 'Your face is partially out of frame. Center your face in the photo.';
+        msg = 'Scan rejected: The photo is too dark. Please retake in a well-lit environment.';
+      } else if (msg.includes('error_src_face_out_of_bound') || msg.includes('error_src_no_face_detected') || msg.includes('error')) {
+        msg = 'Scan rejected: We could not properly detect your face. Please ensure you are looking straight at the camera. If you are wearing glasses, please remove them for the analysis.';
       }
       setError(msg);
       setPhase('upload');
