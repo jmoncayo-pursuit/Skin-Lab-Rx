@@ -59,32 +59,28 @@ export function processImageForAnalysis(
         let cropX: number, cropY: number, cropW: number, cropH: number;
 
         if (face) {
-          const faceRatio = face.width / srcW;
-
-          if (faceRatio >= 0.35) {
-            // ── Face already fills the frame ──
-            // Don't crop at all. Just fit the entire image into a 3:4 box.
+          const desiredCropW = face.width / 0.65; // Force face to be 65% of output width
+          
+          if (desiredCropW >= srcW) {
+            // ── Face already fills >65% of the frame ──
+            // Don't crop tighter. Just fit the entire image into a 3:4 box.
             const imgAspect = srcW / srcH;
             const targetAspect = 3 / 4;
 
             if (imgAspect > targetAspect) {
-              // Image is wider than 3:4 → trim sides
               cropH = srcH;
               cropW = Math.round(srcH * targetAspect);
               cropX = Math.round((srcW - cropW) / 2);
               cropY = 0;
             } else {
-              // Image is taller than 3:4 → trim top/bottom, bias slightly upward
               cropW = srcW;
               cropH = Math.round(srcW / targetAspect);
               cropX = 0;
-              // Center vertically but nudge up a bit for forehead
               cropY = Math.max(0, Math.round((srcH - cropH) / 2 - srcH * 0.03));
             }
           } else {
-            // ── Face is small in a wide/full-body shot ──
-            // Crop around the face so it fills ~62% of the output width
-            const desiredCropW = face.width / 0.62;
+            // ── Face is smaller than 65% ──
+            // Crop aggressively around the face so it fills exactly 65% of the output width
             const desiredCropH = desiredCropW / (3 / 4);
 
             cropW = desiredCropW;
@@ -93,7 +89,7 @@ export function processImageForAnalysis(
             const cx = face.x + face.width / 2;
             const cy = face.y + face.height / 2;
             cropX = cx - cropW / 2;
-            cropY = cy - cropH * 0.4; // bias upward for forehead
+            cropY = cy - cropH * 0.45; // bias upward for forehead
           }
         } else {
           // ── No face detector available ──
