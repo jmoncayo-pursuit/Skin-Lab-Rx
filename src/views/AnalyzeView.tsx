@@ -252,6 +252,9 @@ export default function AnalyzeView({ state, updateState, onNavigate }: AnalyzeV
             )}
           </div>
         </div>
+        <div style={{ marginTop: 12, fontSize: '0.7rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+          *Note: Clinical results may vary if wearing eyewear or heavy makeup.
+        </div>
       </div>
 
       {/* Top Concerns */}
