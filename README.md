@@ -6,25 +6,24 @@ Built for the [Perfect Corp × Startup World Cup Hackathon](https://perfectcorph
 
 ---
 
-## What It Does
-
-Skin Lab Rx is a mobile-first web app that uses Perfect Corp's AI APIs to:
-
-1. **Analyze Your Skin** — Upload a selfie and get AI-scored diagnostics across 14 skin metrics (acne, wrinkles, pores, texture, hydration, oiliness, redness, dark circles, age spots, radiance, firmness, eye bags)
-2. **Recommend Products** — Get personalized skincare product matches ranked by your worst-performing concerns
-3. **Virtual Try-On** — Upload any reference makeup look and see it transferred onto your face using AI Makeup Transfer
+1. **Analyze Your Skin** — Comprehensive 14-metric diagnostic (Acne, Wrinkles, Pores, etc.) using Perfect Corp's high-fidelity scanning.
+2. **Smart UI/UX** — Features a **Draggable Face Alignment Guide** and real-time frontend face detection to guarantee perfect scans every time.
+3. **Actionable Recommendations** — Personalized product matches mapped to specific skin concerns, integrated directly into the results breakdown.
+4. **Virtual Try-On** — Seamless AI Makeup Transfer to see reference looks on your own face.
+5. **Production Resilience** — Built with "Demo-Safe" fallbacks and aggressive auto-cropping to ensure the experience is flawless under any lighting or device conditions.
 
 ## Perfect Corp APIs Used
 
 - **AI Skin Analysis** (`/s2s/v2.0/task/skin-analysis`) — SD skin concern detection with 14 metrics
 - **AI Makeup Transfer** (`/s2s/v2.0/task/mu-transfer`) — Transfers makeup from a reference image to a target selfie
 
-## Tech Stack
+## Hackathon Polish
 
 - **Next.js 16** (App Router, TypeScript)
 - **Perfect Corp YouCam API** (Skin Analysis + Makeup Transfer)
-- Vanilla CSS (glassmorphism dark theme, mobile-first)
-- No external UI framework dependencies
+- **Vanilla CSS** (Premium glassmorphism dark theme)
+- **Frontend Face Detection** (Native browser `FaceDetector` API for real-time framing)
+- **Resilient Backend** (Custom error-handling logic to ensure demo continuity)
 
 ## Getting Started
 
